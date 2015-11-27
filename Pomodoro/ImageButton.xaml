@@ -1,0 +1,49 @@
+﻿<Button x:Class="Pomodoro.ImageButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pomodoro"
+        Name="UC"
+        OverridesDefaultStyle="True">
+  <Button.Template>
+    <ControlTemplate TargetType="{x:Type Button}">
+      <Image Name="PART_Image"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             Source="{Binding Image,
+                              ElementName=UC}"
+             Stretch="None" />
+      <ControlTemplate.Triggers>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+            <Condition Binding="{Binding MouseOverImage, RelativeSource={RelativeSource Self}, Converter={x:Static local:BoolNullConverter.Instance}}" Value="True" />
+          </MultiDataTrigger.Conditions>
+          <Setter TargetName="PART_Image" Property="Source" Value="{Binding MouseOverImage, ElementName=UC}" />
+        </MultiDataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Self}}" Value="True" />
+            <Condition Binding="{Binding PressedImage, RelativeSource={RelativeSource Self}, Converter={x:Static local:BoolNullConverter.Instance}}" Value="True" />
+          </MultiDataTrigger.Conditions>
+          <Setter TargetName="PART_Image" Property="Source" Value="{Binding PressedImage, ElementName=UC}" />
+        </MultiDataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False" />
+            <Condition Binding="{Binding DisabledImage, RelativeSource={RelativeSource Self}, Converter={x:Static local:BoolNullConverter.Instance}}" Value="True" />
+          </MultiDataTrigger.Conditions>
+          <Setter TargetName="PART_Image" Property="Source" Value="{Binding DisabledImage, ElementName=UC}" />
+        </MultiDataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="False" />
+            <Condition Binding="{Binding DisabledImage, RelativeSource={RelativeSource Self}, Converter={x:Static local:BoolNullConverter.Instance}}" Value="False" />
+          </MultiDataTrigger.Conditions>
+          <Setter TargetName="PART_Image" Property="Opacity" Value="0.5" />
+        </MultiDataTrigger>
+      </ControlTemplate.Triggers>
+    </ControlTemplate>
+  </Button.Template>
+</Button>
