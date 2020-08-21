@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
-namespace Pomodoro {
+namespace Tomato25 {
     class MainModel : INotifyPropertyChanged {
         TimeSpan _time;
         public TimeSpan Time {

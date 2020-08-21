@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Pomodoro {
+namespace Tomato25 {
     public class BoolNullConverter : MarkupExtension, IValueConverter {
         public static readonly BoolNullConverter Instance = new BoolNullConverter();
 

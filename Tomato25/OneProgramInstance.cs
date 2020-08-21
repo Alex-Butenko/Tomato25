@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Pomodoro {
+namespace Tomato25 {
     class OneProgramInstance {
         public static readonly OneProgramInstance Instance;
 

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace Pomodoro {
+namespace Tomato25 {
     public partial class ImageButton {
         public ImageButton() {
             InitializeComponent();

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
-namespace Pomodoro {
+namespace Tomato25 {
     static class StartUp {
         [STAThread]
         public static void Main() {

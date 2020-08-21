@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 
-namespace Pomodoro {
+namespace Tomato25 {
     partial class MainWindow {
         public MainWindow() {
             InitializeComponent();

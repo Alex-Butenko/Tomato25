@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows;
 using Forms = System.Windows.Forms;
 
-namespace Pomodoro {
+namespace Tomato25 {
     class NotifyIconManager {
         public static void Init(MainModel mainModel) {
             Instance = new NotifyIconManager(mainModel);
@@ -21,7 +21,7 @@ namespace Pomodoro {
             _contextMenu.Items.Add(itemExit);
             _notifyIcon = new Forms.NotifyIcon {
                 Icon = new Icon(Properties.Resources.Tomato, Forms.SystemInformation.SmallIconSize),
-                Text = "Pomodoro",
+                Text = "Tomato25",
                 Visible = true,
                 ContextMenuStrip = _contextMenu,
             };

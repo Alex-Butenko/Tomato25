@@ -5,7 +5,7 @@ using Graphics = System.Drawing.Graphics;
 using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace Pomodoro {
+namespace Tomato25 {
     partial class MainWindow {
         class FixPositionHelper {
             public FixPositionHelper(MainWindow window) {
