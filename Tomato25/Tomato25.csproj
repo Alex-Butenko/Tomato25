@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolNullConverter.cs" />
-    <Compile Include="ImageButton.xaml.cs" />
+    <Compile Include="ImageButton.xaml.cs">
+      <DependentUpon>ImageButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StartUp.cs" />
     <Page Include="ImageButton.xaml">
       <Generator>MSBuild:Compile</Generator>
