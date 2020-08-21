@@ -7,17 +7,17 @@
         xmlns:qc="http://QuickConverter.CodePlex.com/"
         Name="Window"
         Title="Pomodoro"
-        Width="{Binding Width,
-                        Mode=TwoWay}"
-        Height="{Binding Height,
-                         Mode=TwoWay}"
+        Width="{Binding Width, Mode=TwoWay}"
+        Height="{Binding Height, Mode=TwoWay}"
         MinWidth="180"
         MinHeight="50"
+        d:DataContext="{d:DesignInstance Type=local:MainModel,
+                                         IsDesignTimeCreatable=True}"
+        x:ClassModifier="internal"
         AllowsTransparency="True"
         Closing="Window_Closing"
         Icon="Icons/Tomato.ico"
-        Left="{Binding Left,
-                       Mode=TwoWay}"
+        Left="{Binding Left, Mode=TwoWay}"
         Loaded="Window_Loaded"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -25,129 +25,123 @@
         ShowInTaskbar="False"
         SizeChanged="Window_SizeChanged"
         StateChanged="Window_StateChanged"
-        Top="{Binding Top,
-                      Mode=TwoWay}"
+        Top="{Binding Top, Mode=TwoWay}"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        d:DataContext="{d:DesignInstance Type=local:MainModel,
-                                         IsDesignTimeCreatable=True}"
-        x:ClassModifier="internal"
         mc:Ignorable="d">
-  <Window.Style>
-    <Style TargetType="Window">
-      <Setter Property="Opacity" Value="0.6" />
-      <Style.Triggers>
-        <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Opacity" Value="1" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-  </Window.Style>
-  <Grid>
-    <ProgressBar Background="Transparent"
-                 BorderThickness="0"
-                 Maximum="1"
-                 Minimum="0"
-                 Opacity="0.3"
-                 Value="{Binding Progress,
-                                 Mode=OneWay}" />
-    <Viewbox>
-      <TextBlock Margin="0,-3"
-                 FontFamily="Calibri"
-                 FontWeight="Bold"
-                 Text="{qc:Binding '$P.ToString(\'mm\\ \\:\\ ss\')',
-                                   P={Binding Time}}"
-                 Visibility="{qc:Binding '$P== Mode.Inactive ? Visibility.Collapsed : Visibility.Visible',
-                                         P={Binding Mode}}">
-        <TextBlock.Style>
-          <Style TargetType="TextBlock">
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Opacity" Value="0.6" />
             <Style.Triggers>
-              <DataTrigger Binding="{Binding Mode}"
-                           Value="{x:Static local:Mode.Break}">
-                <Setter Property="Foreground" Value="Green" />
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Mode}"
-                           Value="{x:Static local:Mode.LongBreak}">
-                <Setter Property="Foreground" Value="Green" />
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Mode}"
-                           Value="{x:Static local:Mode.Work}">
-                <Setter Property="Foreground" Value="Red" />
-              </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                </Trigger>
             </Style.Triggers>
-          </Style>
-        </TextBlock.Style>
-      </TextBlock>
-    </Viewbox>
-    <Grid HorizontalAlignment="Left"
-          VerticalAlignment="Bottom"
-          Background="White">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-      <local:ImageButton Grid.Column="0"
-                         Margin="3"
-                         Click="ButtonStart_Click"
-                         Image="Icons/Start.png"
-                         IsEnabled="{Binding CanStart}"
-                         Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                              P={Binding CanStart}}"
-                         ToolTip="Start" />
-      <local:ImageButton Grid.Column="1"
-                         Margin="3"
-                         Click="ButtonPause_Click"
-                         Image="Icons/Pause.png"
-                         IsEnabled="{Binding CanPause}"
-                         Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                              P={Binding CanPause}}"
-                         ToolTip="Pause" />
-      <local:ImageButton Grid.Column="2"
-                         Margin="3"
-                         Click="ButtonShortBreak_Click"
-                         Image="Icons/ShortBreak.png"
-                         IsEnabled="{Binding CanBreak}"
-                         Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                              P={Binding CanBreak}}"
-                         ToolTip="ShortBreak" />
-      <local:ImageButton Grid.Column="3"
-                         Margin="3"
-                         Click="ButtonLongBreak_Click"
-                         Image="Icons/LongBreak.png"
-                         IsEnabled="{Binding CanBreak}"
-                         Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                              P={Binding CanBreak}}"
-                         ToolTip="LongBreak" />
-      <local:ImageButton Grid.Column="4"
-                         Margin="3"
-                         Click="ButtonStop_Click"
-                         Image="Icons/Stop.png"
-                         IsEnabled="{Binding CanStop}"
-                         Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                              P={Binding CanStop}}"
-                         ToolTip="Stop" />
-      <local:ImageButton Grid.Column="5"
-                         Margin="3"
-                         Click="ButtonClose_Click"
-                         Image="Icons/Close.png"
-                         ToolTip="Stop" />
-      <Grid.Style>
-        <Style TargetType="Grid">
-          <Setter Property="Visibility" Value="Collapsed" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver,
-                                           ElementName=Window}"
-                         Value="True">
-              <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-          </Style.Triggers>
         </Style>
-      </Grid.Style>
+    </Window.Style>
+    <Grid>
+        <ProgressBar Background="Transparent"
+                     BorderThickness="0"
+                     Maximum="1"
+                     Minimum="0"
+                     Opacity="0.3"
+                     Value="{Binding Progress, Mode=OneWay}" />
+        <Viewbox>
+            <TextBlock Margin="0,-3"
+                       FontFamily="Calibri"
+                       FontWeight="Bold"
+                       Text="{qc:Binding '$P.ToString(\'mm\\ \\:\\ ss\')',
+                                         P={Binding Time}}"
+                       Visibility="{qc:Binding '$P== Mode.Inactive ? Visibility.Collapsed : Visibility.Visible',
+                                               P={Binding Mode}}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Mode}"
+                                         Value="{x:Static local:Mode.Break}">
+                                <Setter Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Mode}"
+                                         Value="{x:Static local:Mode.LongBreak}">
+                                <Setter Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Mode}"
+                                         Value="{x:Static local:Mode.Work}">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Viewbox>
+        <Grid HorizontalAlignment="Left"
+              VerticalAlignment="Bottom"
+              Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <local:ImageButton Grid.Column="0"
+                               Margin="3"
+                               Click="ButtonStart_Click"
+                               Image="Icons/Start.png"
+                               IsEnabled="{Binding CanStart}"
+                               Opacity="{qc:Binding '$P ? 1 : 0.3',
+                                                    P={Binding CanStart}}"
+                               ToolTip="Start" />
+            <local:ImageButton Grid.Column="1"
+                               Margin="3"
+                               Click="ButtonPause_Click"
+                               Image="Icons/Pause.png"
+                               IsEnabled="{Binding CanPause}"
+                               Opacity="{qc:Binding '$P ? 1 : 0.3',
+                                                    P={Binding CanPause}}"
+                               ToolTip="Pause" />
+            <local:ImageButton Grid.Column="2"
+                               Margin="3"
+                               Click="ButtonShortBreak_Click"
+                               Image="Icons/ShortBreak.png"
+                               IsEnabled="{Binding CanBreak}"
+                               Opacity="{qc:Binding '$P ? 1 : 0.3',
+                                                    P={Binding CanBreak}}"
+                               ToolTip="ShortBreak" />
+            <local:ImageButton Grid.Column="3"
+                               Margin="3"
+                               Click="ButtonLongBreak_Click"
+                               Image="Icons/LongBreak.png"
+                               IsEnabled="{Binding CanBreak}"
+                               Opacity="{qc:Binding '$P ? 1 : 0.3',
+                                                    P={Binding CanBreak}}"
+                               ToolTip="LongBreak" />
+            <local:ImageButton Grid.Column="4"
+                               Margin="3"
+                               Click="ButtonStop_Click"
+                               Image="Icons/Stop.png"
+                               IsEnabled="{Binding CanStop}"
+                               Opacity="{qc:Binding '$P ? 1 : 0.3',
+                                                    P={Binding CanStop}}"
+                               ToolTip="Stop" />
+            <local:ImageButton Grid.Column="5"
+                               Margin="3"
+                               Click="ButtonClose_Click"
+                               Image="Icons/Close.png"
+                               ToolTip="Stop" />
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Window}"
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
     </Grid>
-  </Grid>
 </Window>
