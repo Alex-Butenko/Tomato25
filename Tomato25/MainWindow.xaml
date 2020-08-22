@@ -24,6 +24,9 @@
         Loaded="Window_Loaded"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Opacity="{qc:Binding '$P ? 1: 0.6',
+                             P={Binding IsMouseOver,
+                                        ElementName=Window}}"
         ResizeMode="CanResizeWithGrip"
         ShowInTaskbar="False"
         SizeChanged="Window_SizeChanged"
@@ -34,16 +37,6 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         mc:Ignorable="d">
-    <Window.Style>
-        <Style TargetType="Window">
-            <Setter Property="Opacity" Value="0.6" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="1" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Style>
     <Grid>
         <ProgressBar Background="Transparent"
                      BorderThickness="0"
@@ -80,59 +73,37 @@
                 </TextBlock.Style>
             </TextBlock>
         </Viewbox>
-        <Grid HorizontalAlignment="Left"
-              VerticalAlignment="Bottom"
-              Background="White">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <local:ImageButton Grid.Column="0"
-                               Margin="3"
+        <StackPanel HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Background="White"
+                    Orientation="Horizontal"
+                    Visibility="{qc:Binding '$P ? Visibility.Visible : Visibility.Collapsed',
+                                            P={Binding IsMouseOver,
+                                                       ElementName=Window}}">
+            <local:ImageButton Margin="3"
                                Command="{Binding StartCommand}"
                                Image="Icons/Start.png"
                                ToolTip="Start" />
-            <local:ImageButton Grid.Column="1"
-                               Margin="3"
+            <local:ImageButton Margin="3"
                                Command="{Binding PauseCommand}"
                                Image="Icons/Pause.png"
                                ToolTip="Pause" />
-            <local:ImageButton Grid.Column="2"
-                               Margin="3"
+            <local:ImageButton Margin="3"
                                Command="{Binding BreakCommand}"
                                Image="Icons/ShortBreak.png"
                                ToolTip="ShortBreak" />
-            <local:ImageButton Grid.Column="3"
-                               Margin="3"
+            <local:ImageButton Margin="3"
                                Command="{Binding LongBreakCommand}"
                                Image="Icons/LongBreak.png"
                                ToolTip="LongBreak" />
-            <local:ImageButton Grid.Column="4"
-                               Margin="3"
+            <local:ImageButton Margin="3"
                                Command="{Binding StopCommand}"
                                Image="Icons/Stop.png"
                                ToolTip="Stop" />
-            <local:ImageButton Grid.Column="5"
-                               Margin="3"
+            <local:ImageButton Margin="3"
                                Click="ButtonClose_Click"
                                Image="Icons/Close.png"
                                ToolTip="Stop" />
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver,
-                                                       ElementName=Window}"
-                                     Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-        </Grid>
+        </StackPanel>
     </Grid>
 </Window>
