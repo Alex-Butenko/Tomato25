@@ -17,12 +17,12 @@ namespace Tomato25 {
             Model.RestoreRequest += Restore;
             Model.MinimizeRequest += Minimize;
             Model.MaximizeRequest += Maximize;
-            _fixPositionHelper = new FixPositionHelper(this);
+            _windowSizeAndPositionManager = new FixPositionHelper(this);
         }
 
         public MainModel Model => (MainModel)DataContext;
 
-        readonly FixPositionHelper _fixPositionHelper;
+        readonly FixPositionHelper _windowSizeAndPositionManager;
 
         void Window_StateChanged(object sender, EventArgs e) {
             if (WindowState == WindowState.Minimized) {
@@ -79,11 +79,11 @@ namespace Tomato25 {
         }
 
         void Window_LocationChanged(object sender, EventArgs e) {
-            _fixPositionHelper.FixPosition();
+            _windowSizeAndPositionManager.FixPosition();
         }
 
         void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
-            _fixPositionHelper.FixPosition();
+            _windowSizeAndPositionManager.FixPosition();
         }
 
         void ButtonClose_Click(object sender, RoutedEventArgs e) {

@@ -7,20 +7,16 @@
         xmlns:qc="http://QuickConverter.CodePlex.com/"
         Name="Window"
         Title="Tomato25"
-        Width="{Binding Width,
-                        Mode=TwoWay}"
-        Height="{Binding Height,
-                         Mode=TwoWay}"
         MinWidth="180"
         MinHeight="50"
+        Width="180"
+        Height="50"
         d:DataContext="{d:DesignInstance Type=local:MainModel,
                                          IsDesignTimeCreatable=True}"
         x:ClassModifier="internal"
         AllowsTransparency="True"
         Closing="Window_Closing"
         Icon="Icons/Tomato.ico"
-        Left="{Binding Left,
-                       Mode=TwoWay}"
         Loaded="Window_Loaded"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -31,8 +27,6 @@
         ShowInTaskbar="False"
         SizeChanged="Window_SizeChanged"
         StateChanged="Window_StateChanged"
-        Top="{Binding Top,
-                      Mode=TwoWay}"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"

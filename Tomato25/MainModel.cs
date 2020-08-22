@@ -202,61 +202,6 @@ namespace Tomato25 {
                 }
             }
         }
-
-        double _top;
-        public double Top {
-            get => _top;
-            set {
-                if (Math.Abs(_top - value) < 1) {
-                    return;
-                }
-                _top = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        double _left;
-        public double Left {
-            get => _left;
-            set {
-                if (Math.Abs(_left - value) < 1) {
-                    return;
-                }
-                _left = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        double _height;
-        public double Height {
-            get => _height;
-            set {
-                if (Math.Abs(_height - value) < 1) {
-                    return;
-                }
-                if (value < 200) {
-                    return;
-                }
-                _height = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        double _width;
-
-        public double Width {
-            get => _width;
-            set {
-                if (Math.Abs(_width - value) < 1) {
-                    return;
-                }
-                if (value < 200) {
-                    return;
-                }
-                _width = value;
-                NotifyPropertyChanged();
-            }
-        }
     }
 
     enum Mode {
