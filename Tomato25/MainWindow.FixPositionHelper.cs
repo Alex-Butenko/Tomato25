@@ -93,13 +93,6 @@ namespace Tomato25 {
                     && rect.Top <= point.Y && point.Y <= rect.Bottom;
             }
 
-            bool IsRectangleInsideRectangle(Rectangle outerRect, Rectangle innerRect) {
-                return IsPointInsideRectangle(outerRect, new Point(innerRect.Left, innerRect.Top))
-                    && IsPointInsideRectangle(outerRect, new Point(innerRect.Left, innerRect.Bottom))
-                    && IsPointInsideRectangle(outerRect, new Point(innerRect.Right, innerRect.Top))
-                    && IsPointInsideRectangle(outerRect, new Point(innerRect.Right, innerRect.Bottom));
-            }
-
             void MoveWindowInsideScreen(Rectangle screen, Rectangle window) {
                 if ((screen.Height + 100) < window.Height) {
                     window.Height = screen.Height;
