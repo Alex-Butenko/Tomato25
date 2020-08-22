@@ -15,7 +15,7 @@ namespace Tomato25 {
                 }
             }
 
-            MainWindow _window;
+            readonly MainWindow _window;
 
             bool _dontRaiseLocationSizeChanged;
 
@@ -72,7 +72,7 @@ namespace Tomato25 {
             }
 
             int WpfToWinFormsSize(double size) => (int)(size * _dpi / 96.0);
-            double WinFormsToWpfSize(int size) => (size * 96.0) / _dpi;
+            double WinFormsToWpfSize(int size) => size * 96.0 / _dpi;
 
             float _dpi;
 
@@ -94,17 +94,17 @@ namespace Tomato25 {
             }
 
             void MoveWindowInsideScreen(Rectangle screen, Rectangle window) {
-                if ((screen.Height + 100) < window.Height) {
+                if (screen.Height + 100 < window.Height) {
                     window.Height = screen.Height;
                 }
-                if ((screen.Width + 100) < window.Width) {
+                if (screen.Width + 100 < window.Width) {
                     window.Width = screen.Width;
                 }
                 if (window.Right > screen.Right) {
-                    window.X -= (window.Right - screen.Right);
+                    window.X -= window.Right - screen.Right;
                 }
                 if (window.Bottom > screen.Bottom) {
-                    window.Y -= (window.Bottom - screen.Bottom);
+                    window.Y -= window.Bottom - screen.Bottom;
                 }
                 if (window.X < screen.X) {
                     window.X = screen.X;
@@ -120,17 +120,17 @@ namespace Tomato25 {
 
             void SnapWindowToBounds(Rectangle screen, Rectangle window) {
                 const int snapingDistance = 15;
-                if ((window.X > screen.X) && (window.X - screen.X) < snapingDistance) {
+                if (window.X > screen.X && window.X - screen.X < snapingDistance) {
                     window.X = screen.X;
                 }
-                if ((window.Y > screen.Y) && (window.Y - screen.Y) < snapingDistance) {
+                if (window.Y > screen.Y && window.Y - screen.Y < snapingDistance) {
                     window.Y = screen.Y;
                 }
-                if ((window.Right < screen.Right) && (screen.Right - window.Right) < snapingDistance) {
-                    window.X -= (window.Right - screen.Right);
+                if (window.Right < screen.Right && screen.Right - window.Right < snapingDistance) {
+                    window.X -= window.Right - screen.Right;
                 }
-                if ((window.Bottom < screen.Bottom) && (screen.Bottom - window.Bottom) < snapingDistance) {
-                    window.Y -= (window.Bottom - screen.Bottom);
+                if (window.Bottom < screen.Bottom && screen.Bottom - window.Bottom < snapingDistance) {
+                    window.Y -= window.Bottom - screen.Bottom;
                 }
                 _window.Model.Left = WinFormsToWpfSize(window.Left);
                 _window.Model.Top = WinFormsToWpfSize(window.Top);

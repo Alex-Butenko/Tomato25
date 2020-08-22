@@ -55,7 +55,7 @@ namespace Tomato25 {
                 _preventLoopIsVisible = false;
             }
         }
-        public void Restore() {
+        void Restore() {
             if (_preventLoopIsVisible) {
                 return;
             }
@@ -73,12 +73,9 @@ namespace Tomato25 {
         }
         void Maximize(bool maximize) {
             Show();
-            if (maximize) {
-                WindowState = WindowState.Maximized;
-            }
-            else {
-                WindowState = WindowState.Normal;
-            }
+            WindowState = maximize
+                ? WindowState.Maximized
+                : WindowState.Normal;
         }
 
         void Window_LocationChanged(object sender, EventArgs e) {
