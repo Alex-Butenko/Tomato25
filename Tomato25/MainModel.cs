@@ -4,9 +4,18 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Tomato25 {
     class MainModel : INotifyPropertyChanged {
+        public MainModel() {
+            StartCommand = new RelayCommand(_ => StartWork(), _ => Mode != Mode.Work);
+            PauseCommand = new RelayCommand(_ => PauseWork(), _ => Mode == Mode.Work);
+            BreakCommand = new RelayCommand(_ => StartBreak(), _ => Mode == Mode.Work || Mode == Mode.Pause);
+            LongBreakCommand = new RelayCommand(_ => StartLongBreak(), _ => Mode == Mode.Work || Mode == Mode.Pause);
+            StopCommand = new RelayCommand(_ => Stop(), _ => Mode != Mode.Inactive);
+        }
+
         TimeSpan _time;
         public TimeSpan Time {
             get => _time;
@@ -27,14 +36,21 @@ namespace Tomato25 {
             set {
                 _mode = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(CanBreak));
-
-                NotifyPropertyChanged(nameof(CanStart));
-                NotifyPropertyChanged(nameof(CanStop));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
-        public void StartWork() {
+        public ICommand StartCommand { get; }
+
+        public ICommand PauseCommand { get; }
+
+        public ICommand BreakCommand { get; }
+
+        public ICommand LongBreakCommand { get; }
+
+        public ICommand StopCommand { get; }
+
+        void StartWork() {
             MaximizeRequest?.Invoke(false);
             if (Mode == Mode.Pause) {
                 UnpauseCount();
@@ -63,12 +79,12 @@ namespace Tomato25 {
 
         public Action<bool> MaximizeRequest;
 
-        public void PauseWork() {
+        void PauseWork() {
             PauseCount();
             Mode = Mode.Pause;
         }
 
-        public void StartBreak() {
+        void StartBreak() {
             StopCount();
             MaximizeRequest?.Invoke(true);
             _nextAction = null;
@@ -81,7 +97,7 @@ namespace Tomato25 {
             Mode = Mode.Break;
         }
 
-        public void StartLongBreak() {
+        void StartLongBreak() {
             StopCount();
             MaximizeRequest?.Invoke(true);
             _nextAction = null;
@@ -94,20 +110,12 @@ namespace Tomato25 {
             Mode = Mode.LongBreak;
         }
 
-        public void Stop() {
+        void Stop() {
             _nextAction = null;
             StopCount();
             Mode = Mode.Inactive;
             MaximizeRequest?.Invoke(false);
         }
-
-        public bool CanStart => Mode != Mode.Work;
-
-        public bool CanPause => Mode == Mode.Work;
-
-        public bool CanStop => Mode != Mode.Inactive;
-
-        public bool CanBreak => Mode == Mode.Work || Mode == Mode.Pause;
 
         public double Progress => (double)(_wholeTime.Ticks - Time.Ticks) / _wholeTime.Ticks;
 
@@ -235,6 +243,7 @@ namespace Tomato25 {
         }
 
         double _width;
+
         public double Width {
             get => _width;
             set {

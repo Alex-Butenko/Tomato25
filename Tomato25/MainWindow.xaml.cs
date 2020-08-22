@@ -86,26 +86,6 @@ namespace Tomato25 {
             _fixPositionHelper.FixPosition();
         }
 
-        void ButtonStart_Click(object sender, RoutedEventArgs e) {
-            Model.StartWork();
-        }
-
-        void ButtonPause_Click(object sender, RoutedEventArgs e) {
-            Model.PauseWork();
-        }
-
-        void ButtonShortBreak_Click(object sender, RoutedEventArgs e) {
-            Model.StartBreak();
-        }
-
-        void ButtonLongBreak_Click(object sender, RoutedEventArgs e) {
-            Model.StartLongBreak();
-        }
-
-        void ButtonStop_Click(object sender, RoutedEventArgs e) {
-            Model.Stop();
-        }
-
         void ButtonClose_Click(object sender, RoutedEventArgs e) {
             if (Debugger.IsAttached) {
                 Environment.Exit(0);

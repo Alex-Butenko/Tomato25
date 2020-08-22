@@ -6,9 +6,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:qc="http://QuickConverter.CodePlex.com/"
         Name="Window"
-        Width="{Binding Width, Mode=TwoWay}"
-        Height="{Binding Height, Mode=TwoWay}"
         Title="Tomato25"
+        Width="{Binding Width,
+                        Mode=TwoWay}"
+        Height="{Binding Height,
+                         Mode=TwoWay}"
         MinWidth="180"
         MinHeight="50"
         d:DataContext="{d:DesignInstance Type=local:MainModel,
@@ -17,7 +19,8 @@
         AllowsTransparency="True"
         Closing="Window_Closing"
         Icon="Icons/Tomato.ico"
-        Left="{Binding Left, Mode=TwoWay}"
+        Left="{Binding Left,
+                       Mode=TwoWay}"
         Loaded="Window_Loaded"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -25,7 +28,8 @@
         ShowInTaskbar="False"
         SizeChanged="Window_SizeChanged"
         StateChanged="Window_StateChanged"
-        Top="{Binding Top, Mode=TwoWay}"
+        Top="{Binding Top,
+                      Mode=TwoWay}"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -46,7 +50,8 @@
                      Maximum="1"
                      Minimum="0"
                      Opacity="0.3"
-                     Value="{Binding Progress, Mode=OneWay}" />
+                     Value="{Binding Progress,
+                                     Mode=OneWay}" />
         <Viewbox>
             <TextBlock Margin="0,-3"
                        FontFamily="Calibri"
@@ -88,43 +93,28 @@
             </Grid.ColumnDefinitions>
             <local:ImageButton Grid.Column="0"
                                Margin="3"
-                               Click="ButtonStart_Click"
+                               Command="{Binding StartCommand}"
                                Image="Icons/Start.png"
-                               IsEnabled="{Binding CanStart}"
-                               Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                                    P={Binding CanStart}}"
                                ToolTip="Start" />
             <local:ImageButton Grid.Column="1"
                                Margin="3"
-                               Click="ButtonPause_Click"
+                               Command="{Binding PauseCommand}"
                                Image="Icons/Pause.png"
-                               IsEnabled="{Binding CanPause}"
-                               Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                                    P={Binding CanPause}}"
                                ToolTip="Pause" />
             <local:ImageButton Grid.Column="2"
                                Margin="3"
-                               Click="ButtonShortBreak_Click"
+                               Command="{Binding BreakCommand}"
                                Image="Icons/ShortBreak.png"
-                               IsEnabled="{Binding CanBreak}"
-                               Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                                    P={Binding CanBreak}}"
                                ToolTip="ShortBreak" />
             <local:ImageButton Grid.Column="3"
                                Margin="3"
-                               Click="ButtonLongBreak_Click"
+                               Command="{Binding LongBreakCommand}"
                                Image="Icons/LongBreak.png"
-                               IsEnabled="{Binding CanBreak}"
-                               Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                                    P={Binding CanBreak}}"
                                ToolTip="LongBreak" />
             <local:ImageButton Grid.Column="4"
                                Margin="3"
-                               Click="ButtonStop_Click"
+                               Command="{Binding StopCommand}"
                                Image="Icons/Stop.png"
-                               IsEnabled="{Binding CanStop}"
-                               Opacity="{qc:Binding '$P ? 1 : 0.3',
-                                                    P={Binding CanStop}}"
                                ToolTip="Stop" />
             <local:ImageButton Grid.Column="5"
                                Margin="3"
@@ -135,7 +125,8 @@
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Window}"
+                        <DataTrigger Binding="{Binding IsMouseOver,
+                                                       ElementName=Window}"
                                      Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
