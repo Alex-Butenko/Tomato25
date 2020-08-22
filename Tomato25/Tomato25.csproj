@@ -54,6 +54,7 @@
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="StartUp.cs" />
+    <Compile Include="WinAPIWrappers.cs" />
     <Page Include="ImageButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
