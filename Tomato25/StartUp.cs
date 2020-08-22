@@ -10,7 +10,12 @@ namespace Tomato25 {
         public static void Main() {
             Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
 
-            if (!Debugger.IsAttached && OneProgramInstance.Instance.ProgramHasAnotherInstance) {
+            if (!Debugger.IsAttached
+                && OneProgramInstance.HasAnotherInstance
+                && MessageBox.Show(
+                    "Do you want to proceed anyway?",
+                    "Another instance of Tomato25 is running already",
+                    MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No) {
                 return;
             }
 
@@ -27,7 +32,6 @@ namespace Tomato25 {
 
             MainWindow mainWindow = new MainWindow();
             NotifyIconManager.Init(mainWindow.Model);
-            OneProgramInstance.Instance.StartPipeServer(mainWindow);
 
             app.Run(mainWindow);
         }
