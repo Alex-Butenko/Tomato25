@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 
@@ -11,21 +12,21 @@ namespace Tomato25 {
             get => _time;
             set {
                 _time = value;
-                NotifyPropertyChanged(nameof(Time));
+                NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(Progress));
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
-        void NotifyPropertyChanged(string propertyName) {
+        void NotifyPropertyChanged([CallerMemberName] string propertyName = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         Mode _mode = Mode.Inactive;
         public Mode Mode {
             get => _mode;
             set {
                 _mode = value;
-                NotifyPropertyChanged(nameof(Mode));
+                NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(CanBreak));
 
                 NotifyPropertyChanged(nameof(CanStart));
@@ -114,7 +115,7 @@ namespace Tomato25 {
         DateTime _currentCountStartTime;
         TimeSpan _countAtStartTime;
         volatile bool _exit;
-        object _lock = new object();
+        readonly object _lock = new object();
         void StartCount(TimeSpan time) {
             lock (_lock) {
                 _currentCountStartTime = DateTime.Now;
@@ -136,7 +137,7 @@ namespace Tomato25 {
                     lock (_lock) {
                         tmp = _countAtStartTime - (DateTime.Now - _currentCountStartTime);
                     }
-                    Application.Current.Dispatcher.Invoke(new Action(() => {
+                    Application.Current.Dispatcher.Invoke(() => {
                         if (tmp > TimeSpan.FromSeconds(1)) {
                             Time = tmp;
                         }
@@ -145,7 +146,7 @@ namespace Tomato25 {
                             MaximizeRequest?.Invoke(false);
                             _nextAction?.Invoke();
                         }
-                    }));
+                    });
                     if (tmp < TimeSpan.FromSeconds(1)) {
                         break;
                     }
@@ -182,9 +183,7 @@ namespace Tomato25 {
 
         bool _isVisible;
         public bool IsVisible {
-            get {
-                return _isVisible;
-            }
+            get => _isVisible;
             set {
                 _isVisible = value;
                 if (value) {
@@ -198,37 +197,31 @@ namespace Tomato25 {
 
         double _top;
         public double Top {
-            get {
-                return _top;
-            }
+            get => _top;
             set {
                 if (Math.Abs(_top - value) < 1) {
                     return;
                 }
                 _top = value;
-                NotifyPropertyChanged(nameof(Top));
+                NotifyPropertyChanged();
             }
         }
 
         double _left;
         public double Left {
-            get {
-                return _left;
-            }
+            get => _left;
             set {
                 if (Math.Abs(_left - value) < 1) {
                     return;
                 }
                 _left = value;
-                NotifyPropertyChanged(nameof(Left));
+                NotifyPropertyChanged();
             }
         }
 
         double _height;
         public double Height {
-            get {
-                return _height;
-            }
+            get => _height;
             set {
                 if (Math.Abs(_height - value) < 1) {
                     return;
@@ -237,15 +230,13 @@ namespace Tomato25 {
                     return;
                 }
                 _height = value;
-                NotifyPropertyChanged(nameof(Height));
+                NotifyPropertyChanged();
             }
         }
 
         double _width;
         public double Width {
-            get {
-                return _width;
-            }
+            get => _width;
             set {
                 if (Math.Abs(_width - value) < 1) {
                     return;
@@ -254,7 +245,7 @@ namespace Tomato25 {
                     return;
                 }
                 _width = value;
-                NotifyPropertyChanged(nameof(Width));
+                NotifyPropertyChanged();
             }
         }
     }
