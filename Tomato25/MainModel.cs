@@ -3,41 +3,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Tomato25 {
     class MainModel : INotifyPropertyChanged {
         public MainModel() {
-            StartCommand = new RelayCommand(_ => StartWork(), _ => Mode != Mode.Work);
-            PauseCommand = new RelayCommand(_ => PauseWork(), _ => Mode == Mode.Work);
-            BreakCommand = new RelayCommand(_ => StartBreak(), _ => Mode == Mode.Work || Mode == Mode.Pause);
-            LongBreakCommand = new RelayCommand(_ => StartLongBreak(), _ => Mode == Mode.Work || Mode == Mode.Pause);
+            StartCommand = new RelayCommand(_ => StartWork(), _ => !(Mode == Mode.Work && State == State.Running));
+            PauseCommand = new RelayCommand(_ => PauseWork(), _ => Mode == Mode.Work && State == State.Running);
+            BreakCommand = new RelayCommand(_ => StartShortBreak(), _ => Mode == Mode.Work);
+            LongBreakCommand = new RelayCommand(_ => StartLongBreak(), _ => Mode == Mode.Work);
             StopCommand = new RelayCommand(_ => Stop(), _ => Mode != Mode.Inactive);
-        }
-
-        TimeSpan _time;
-        public TimeSpan Time {
-            get => _time;
-            set {
-                _time = value;
-                NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(Progress));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        void NotifyPropertyChanged([CallerMemberName] string propertyName = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        Mode _mode = Mode.Inactive;
-        public Mode Mode {
-            get => _mode;
-            set {
-                _mode = value;
-                NotifyPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
-            }
         }
 
         public ICommand StartCommand { get; }
@@ -50,146 +26,155 @@ namespace Tomato25 {
 
         public ICommand StopCommand { get; }
 
+        TimeSpan GetDuration(double length) =>
+            Debugger.IsAttached
+                ? TimeSpan.FromSeconds(length)
+                : TimeSpan.FromMinutes(length);
+
+
         void StartWork() {
             MaximizeRequest?.Invoke(false);
-            if (Mode == Mode.Pause) {
-                UnpauseCount();
+            if (Mode != Mode.Work) {
+                ToDefaultState();
             }
-            else {
-                if (_countOfWorks < 3) {
-                    _nextAction = StartBreak;
-                }
-                else {
-                    _nextAction = StartLongBreak;
-                    _countOfWorks = 0;
-                }
-                _countOfWorks++;
-                StopCount();
-                if (Debugger.IsAttached) {
-                    StartCount(TimeSpan.FromSeconds(25));
-                }
-                else {
-                    StartCount(TimeSpan.FromMinutes(25));
-                }
-            }
+            CancelLoop();
             Mode = Mode.Work;
+            State = State.Running;
+
+            BackgroundLoop(GetDuration(25), StartBreak);
         }
-
-        int _countOfWorks;
-
-        public Action<bool> MaximizeRequest;
 
         void PauseWork() {
-            PauseCount();
-            Mode = Mode.Pause;
+            CancelLoop();
+            State = State.Stopped;
         }
 
-        void StartBreak() {
-            StopCount();
-            MaximizeRequest?.Invoke(true);
-            _nextAction = null;
-            if (Debugger.IsAttached) {
-                StartCount(TimeSpan.FromSeconds(5));
-            }
-            else {
-                StartCount(TimeSpan.FromMinutes(5));
-            }
-            Mode = Mode.Break;
+        void StartShortBreak() {
+            _countOfShortBreaks++;
+            StartBreak(5);
         }
 
         void StartLongBreak() {
-            StopCount();
-            MaximizeRequest?.Invoke(true);
-            _nextAction = null;
-            if (Debugger.IsAttached) {
-                StartCount(TimeSpan.FromSeconds(20));
+            _countOfShortBreaks = 0;
+            StartBreak(20);
+        }
+
+        void StartBreak() {
+            if (_countOfShortBreaks >= 3) {
+                StartLongBreak();
             }
             else {
-                StartCount(TimeSpan.FromMinutes(20));
+                StartShortBreak();
             }
-            Mode = Mode.LongBreak;
+        }
+
+        void StartBreak(double length) {
+            MaximizeRequest?.Invoke(true);
+            ToDefaultState();
+            Mode = Mode.Break;
+            State = State.Running;
+            BackgroundLoop(GetDuration(length));
         }
 
         void Stop() {
-            _nextAction = null;
-            StopCount();
-            Mode = Mode.Inactive;
+            ToDefaultState();
             MaximizeRequest?.Invoke(false);
         }
 
-        public double Progress => (double)(_wholeTime.Ticks - Time.Ticks) / _wholeTime.Ticks;
-
-        TimeSpan _wholeTime;
-        DateTime _currentCountStartTime;
-        TimeSpan _countAtStartTime;
-        volatile bool _exit;
-        readonly object _lock = new object();
-        void StartCount(TimeSpan time) {
-            lock (_lock) {
-                _currentCountStartTime = DateTime.Now;
-                _countAtStartTime = time;
-                _wholeTime = time;
-                Time = time;
-                _exit = false;
-            }
-            Counting();
+        void ToDefaultState() {
+            CancelLoop();
+            Mode = Mode.Inactive;
+            State = State.Stopped;
+            TimeLeft = TimeSpan.Zero;
+            Progress = 0;
         }
 
-        Action _nextAction;
+        TimeSpan _timeLeft;
+        public TimeSpan TimeLeft {
+            get => _timeLeft;
+            private set {
+                _timeLeft = value > TimeSpan.Zero ? value : TimeSpan.Zero;
+                NotifyPropertyChanged();
+            }
+        }
 
-        void Counting() {
-            new Action(() => {
-                while (!_exit) {
-                    Thread.Sleep(200);
-                    TimeSpan tmp;
-                    lock (_lock) {
-                        tmp = _countAtStartTime - (DateTime.Now - _currentCountStartTime);
-                    }
-                    Application.Current.Dispatcher.Invoke(() => {
-                        if (tmp > TimeSpan.FromSeconds(1)) {
-                            Time = tmp;
-                        }
-                        else {
-                            Time = TimeSpan.Zero;
-                            MaximizeRequest?.Invoke(false);
-                            _nextAction?.Invoke();
-                        }
-                    });
-                    if (tmp < TimeSpan.FromSeconds(1)) {
-                        break;
-                    }
+        double _progress;
+        public double Progress {
+            get => _progress;
+            private set {
+                _progress = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        Mode _mode = Mode.Inactive;
+        public Mode Mode {
+            get => _mode;
+            set {
+                if (_mode != value) {
+                    _mode = value;
+                    NotifyPropertyChanged();
+                    CommandManager.InvalidateRequerySuggested();
                 }
-            }).BeginInvoke(null, null);
-        }
-
-        void PauseCount() {
-            lock (_lock) {
-                _exit = true;
             }
         }
 
-        void UnpauseCount() {
-            lock (_lock) {
-                _currentCountStartTime = DateTime.Now;
-                _countAtStartTime = Time;
-                _exit = false;
+        State _state;
+        State State {
+            get => _state;
+            set {
+                if (_state != value) {
+                    _state = value;
+                    CommandManager.InvalidateRequerySuggested();
+                }
             }
-            Counting();
         }
 
-        void StopCount() {
-            lock (_lock) {
-                _exit = true;
-                _countAtStartTime = TimeSpan.Zero;
-                Time = TimeSpan.Zero;
-                _wholeTime = TimeSpan.Zero;
-            }
+        void CancelLoop() {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
         }
+
+        DateTime _startedAt;
+        CancellationTokenSource _cancellationTokenSource;
+        void BackgroundLoop(TimeSpan limit, Action onFinished = null) {
+            TimeSpan timeElapsed = TimeLeft == TimeSpan.Zero ? TimeSpan.Zero : limit - TimeLeft;
+            CancellationToken token = _cancellationTokenSource.Token;
+            TimeLeft = limit - timeElapsed;
+            _startedAt = DateTime.Now - timeElapsed;
+            Task.Factory.StartNew(
+                async () => {
+                    while (_state == State.Running) {
+                        await Task.Delay(TimeSpan.FromMilliseconds(200), token);
+                        if (token.IsCancellationRequested) return;
+                        timeElapsed = DateTime.Now - _startedAt;
+                        TimeLeft = limit - timeElapsed;
+                        Progress = (double)timeElapsed.Ticks / limit.Ticks;
+                        if (timeElapsed > limit) {
+                            ToDefaultState();
+                            onFinished?.Invoke();
+                        }
+                    }
+                },
+                token,
+                TaskCreationOptions.None,
+                TaskScheduler.FromCurrentSynchronizationContext()
+            );
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        void NotifyPropertyChanged([CallerMemberName] string propertyName = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        int _countOfShortBreaks;
 
         public Action RestoreRequest;
         public Action MinimizeRequest;
 
+        public Action<bool> MaximizeRequest;
+
         bool _isVisible;
+
         public bool IsVisible {
             get => _isVisible;
             set {
@@ -202,13 +187,5 @@ namespace Tomato25 {
                 }
             }
         }
-    }
-
-    enum Mode {
-        Inactive,
-        Work,
-        Pause,
-        Break,
-        LongBreak,
     }
 }

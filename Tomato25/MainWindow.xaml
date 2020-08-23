@@ -7,10 +7,10 @@
         xmlns:qc="http://QuickConverter.CodePlex.com/"
         Name="Window"
         Title="Tomato25"
-        MinWidth="180"
-        MinHeight="50"
         Width="180"
         Height="50"
+        MinWidth="180"
+        MinHeight="50"
         d:DataContext="{d:DesignInstance Type=local:MainModel,
                                          IsDesignTimeCreatable=True}"
         x:ClassModifier="internal"
@@ -44,18 +44,12 @@
                        FontFamily="Calibri"
                        FontWeight="Bold"
                        Text="{qc:Binding '$P.ToString(\'mm\\ \\:\\ ss\')',
-                                         P={Binding Time}}"
-                       Visibility="{qc:Binding '$P== Mode.Inactive ? Visibility.Collapsed : Visibility.Visible',
-                                               P={Binding Mode}}">
+                                         P={Binding TimeLeft}}">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Mode}"
                                          Value="{x:Static local:Mode.Break}">
-                                <Setter Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Mode}"
-                                         Value="{x:Static local:Mode.LongBreak}">
                                 <Setter Property="Foreground" Value="Green" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Mode}"

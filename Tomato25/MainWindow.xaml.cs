@@ -73,7 +73,7 @@ namespace Tomato25 {
         }
         void Maximize(bool maximize) {
             Show();
-            WindowState = maximize
+            WindowState = maximize && !Debugger.IsAttached
                 ? WindowState.Maximized
                 : WindowState.Normal;
         }
